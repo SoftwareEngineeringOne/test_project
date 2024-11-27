@@ -5,6 +5,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CACHE_ON_FAILURE: true
 
 jobs:
   generate:
@@ -33,7 +34,7 @@ jobs:
 
       - name: Build Docs
         run: |
-          cargo doc --workspace --no-deps --target-dir tmpdocs
+          cargo doc --workspace --no-deps --target-dir target
 
       - name: Order files
         run: |
@@ -42,8 +43,7 @@ jobs:
 
       - name: Move documentation
         run: |
-          cp tmpdocs/doc/* docs -r
-          cp tmpdocs/doc/.* docs -r
+          cp target/doc/* docs/ -r
 
       - name: Github Config
         run: |
