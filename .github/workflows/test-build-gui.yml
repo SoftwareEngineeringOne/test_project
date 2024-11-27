@@ -1,0 +1,51 @@
+name: Build GUI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "gui/src/**"
+      - "gui/src-tauri/**"
+      - "gui/tests/**"
+      - "gui/bun.lockb"
+      - "gui/src-tauri/Cargo.lock"
+      - "gui/.github/workflows/test-build.yml"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: true
+
+    runs-on: "ubuntu-24.04"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+        working-directory: ./gui
+      - run: bun i
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        working-directory: ./gui
+
+      - name: install dependencies
+        working-directory: ./gui
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Build Tauri
+        working-directory: ./gui
+        run: bun tauri build

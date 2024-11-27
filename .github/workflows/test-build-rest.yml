@@ -1,0 +1,38 @@
+name: Test
+on:
+  push: { branches: main }
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Matrix test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { dir: ["cli", "lib"] }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Rust Caching
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+
+      - name: Rustfmt Check
+        uses: actions-rust-lang/rustfmt@v1
+
+      - name: Run cargo check
+        working-directory: ${{ matrix.dir }}
+        run: cargo check --all-features
+
+      - name: Run cargo test
+        working-directory: ${{ matrix.dir }}
+        run: cargo test --all-features
