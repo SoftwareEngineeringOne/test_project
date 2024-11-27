@@ -1,6 +1,6 @@
 use color_eyre::Result;
 use inquire::Text;
-use lib::metadata::{BuildSystem, Ide, Language};
+use episko_lib::metadata::{BuildSystem, Ide, Language};
 
 #[derive(Default, Debug)]
 pub struct Prompt {

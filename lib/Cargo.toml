@@ -1,6 +1,8 @@
 [package]
-name = "lib"
-version = "0.1.0"
+name = "episko_lib"
+version = "0.0.1"
+authors = ["Simon Blum", "Ben Oeckl", "Paul Stöckle", "Maximilian Rodler"]
+license = "MIT"
 edition = "2021"
 
 [dependencies]

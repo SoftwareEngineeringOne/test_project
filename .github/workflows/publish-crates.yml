@@ -1,0 +1,30 @@
+name: Check/Format/Test Rust
+on:
+  push: { branches: main }
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Matrix test
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { dir: ["cli", "lib"] }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Rust Caching
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish crates
+        uses: katyo/publish-crates@v2
+        with:
+          path: ${{ matrix.dir }}
+          registry-token: ${{ secrets.REGISTRY_TOKEN }}

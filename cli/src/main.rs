@@ -1,6 +1,6 @@
 use chrono::Utc;
-use lib::metadata::{BuildSystem, Ide, Language, Metadata};
-use lib::FileHandler;
+use episko_lib::metadata::{BuildSystem, Ide, Language, Metadata};
+use episko_lib::FileHandler;
 use prompt::Prompt;
 use uuid::Uuid;
 
