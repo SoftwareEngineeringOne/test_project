@@ -1,4 +1,4 @@
-name: "publish gui"
+name: "Publish Gui"
 
 on:
   push:

@@ -4,13 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "gui/src/**"
-      - "gui/src-tauri/**"
-      - "gui/tests/**"
-      - "gui/bun.lockb"
-      - "gui/src-tauri/Cargo.lock"
-      - "gui/.github/workflows/test-build.yml"
   pull_request:
   workflow_dispatch:
 
@@ -33,12 +26,12 @@ jobs:
         uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-        working-directory: ./gui
+
       - run: bun i
+        working-directory: ./gui
 
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
-        working-directory: ./gui
 
       - name: install dependencies
         working-directory: ./gui
