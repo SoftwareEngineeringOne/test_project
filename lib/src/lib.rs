@@ -1,5 +1,5 @@
-pub mod metadata;
 pub mod filehandler;
+pub mod metadata;
 
 pub use filehandler::FileHandler;
 

@@ -1,8 +1,8 @@
-use lib::metadata::{Metadata, Language, Ide, BuildSystem};
-use lib::FileHandler;
-use uuid::Uuid;
 use chrono::Utc;
+use lib::metadata::{BuildSystem, Ide, Language, Metadata};
+use lib::FileHandler;
 use prompt::Prompt;
+use uuid::Uuid;
 
 mod prompt;
 

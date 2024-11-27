@@ -1,16 +1,14 @@
-use uuid::Uuid;
-use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
 use crate::{insert_if_not_exists, remove_if_exists};
-pub use language::Language;
-pub use ide::Ide;
 pub use buildsystem::BuildSystem;
+use chrono::{DateTime, Utc};
+pub use ide::Ide;
+pub use language::Language;
+use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
-
-pub mod language;
-pub mod ide;
 pub mod buildsystem;
-
+pub mod ide;
+pub mod language;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Metadata {
@@ -24,7 +22,7 @@ pub struct Metadata {
     pub preferred_ide: Option<Ide>,
     pub repository_url: Option<String>,
     pub created: DateTime<Utc>,
-    pub updated: DateTime<Utc>
+    pub updated: DateTime<Utc>,
 }
 
 impl Metadata {
@@ -46,7 +44,6 @@ impl Metadata {
             created: Some(self.created),
         }
     }
-
 }
 
 #[derive(Default)]
@@ -56,7 +53,7 @@ pub struct MetadataBuilder {
     title: Option<String>,
     description: Option<String>,
     languages: Vec<Language>,
-    categories:Vec<String>,
+    categories: Vec<String>,
     build_system: Option<BuildSystem>,
     preferred_ide: Option<Ide>,
     repository_url: Option<String>,
