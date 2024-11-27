@@ -1,4 +1,4 @@
-name: Check/Format/Test Rust
+name: Publish Crates
 on:
   push: { branches: main }
   workflow_dispatch:
@@ -7,7 +7,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test:
+  publish:
     name: Matrix test
     runs-on: ubuntu-latest
     strategy:
