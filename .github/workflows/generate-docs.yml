@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Docs
         run: |
-          cargo doc --workspace --no-deps --target-dir target
+          cargo doc --workspace --target-dir target
 
       - name: Order files
         run: |
@@ -45,6 +45,7 @@ jobs:
 
       - name: Move documentation
         run: |
+          cp util/index.html docs/
           cp target/doc/* docs/ -r
 
       - name: Github Config
