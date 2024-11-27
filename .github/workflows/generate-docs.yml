@@ -1,0 +1,63 @@
+name: Generate Docs
+on:
+  push: { branches: main }
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  CACHE_ON_FAILURE: true
+
+permissions: write-all
+
+jobs:
+  generate:
+    name: Generate documentation
+    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix: { dir: ["cli", "lib"] }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rust Caching
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: install dependencies
+        working-directory: ./gui
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Build Docs
+        run: |
+          cargo doc --workspace --target-dir target
+
+      - name: Order files
+        run: |
+          rm docs -rf
+          mkdir docs
+
+      - name: Move documentation
+        run: |
+          cp util/index.html docs/
+          cp target/doc/* docs/ -r
+
+      - name: Github Config
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs -f
+          git commit -a -m "docs: generate documentation"
+
+      - name: Push Documentation
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: docs
+          force: true

@@ -9,7 +9,7 @@ env:
 
 jobs:
   test:
-    name: Matrix test
+    name: Rust workflow
     runs-on: ubuntu-latest
     strategy:
       matrix: { dir: ["cli", "lib", "gui/src-tauri"] }

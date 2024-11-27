@@ -1,6 +1,8 @@
 name: Publish Crates
 on:
-  push: { branches: main }
+  push:
+    tags:
+      - v*.*.*
   workflow_dispatch:
 
 env:
@@ -8,7 +10,7 @@ env:
 
 jobs:
   publish:
-    name: Matrix test
+    name: Publish Crates
     runs-on: ubuntu-latest
     # strategy:
     #   matrix: { dir: ["cli", "lib"] }
