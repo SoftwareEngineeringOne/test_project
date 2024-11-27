@@ -1,0 +1,61 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="High-level and safe API for opening and getting symbols from dynamic link libraries. It is based on wrapping private symbols with public functions to prevent direct access and supports automatic loading of symbols into structures."><title>dlopen2::wrapper - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-492a78a4a87dcc01.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="dlopen2" data-themes="" data-resource-suffix="" data-rustdoc-version="1.82.0 (f6e511eec 2024-10-15)" data-channel="1.82.0" data-search-js="search-a99f1315e7cc5121.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-921df33f47b8780c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-3b12f09e550e0385.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../dlopen2/index.html">dlopen2</a><span class="version">0.7.0</span></h2></div><h2 class="location"><a href="#">Module wrapper</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#structs">Structs</a></li><li><a href="#traits">Traits</a></li><li><a href="#derives">Derive Macros</a></li></ul></section><h2><a href="../index.html">In crate dlopen2</a></h2></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">dlopen2</a>::<wbr><a class="mod" href="#">wrapper</a><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><span class="out-of-band"><a class="src" href="../../src/dlopen2/wrapper/mod.rs.html#1-85">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>High-level and safe API for opening and getting symbols from dynamic link libraries.
+It is based on wrapping private symbols with public functions to prevent direct access
+and supports automatic loading of symbols into structures.</p>
+<p>This API solves the problem with dangling symbols by wrapping raw symbols with public functions.
+User of API does not have direct access to raw symbols and therefore symbols cannot be copied.
+Symbols and library handle are kept in one <code>Container</code> structure and therefore both the the library
+and symbols get released at the same time.</p>
+<p>#Example</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dlopen2::wrapper::{Container, WrapperApi};
+
+<span class="attr">#[derive(WrapperApi)]
+</span><span class="kw">struct </span>Example&lt;<span class="lifetime">'a</span>&gt; {
+    do_something: <span class="kw">extern </span><span class="string">"C" </span><span class="kw">fn</span>(),
+    add_one: <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>(arg: i32) -&gt; i32,
+    global_count: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>u32,
+}
+
+<span class="kw">fn </span>main () {
+<span class="kw">let </span><span class="kw-2">mut </span>container: Container&lt;Example&gt; = <span class="kw">unsafe </span>{ Container::load(<span class="string">"libexample.dylib"</span>)}.unwrap();
+container.do_something();
+<span class="kw">let </span>_result = <span class="kw">unsafe </span>{ container.add_one(<span class="number">5</span>) };
+<span class="kw-2">*</span>container.global_count_mut() += <span class="number">1</span>;
+
+<span class="comment">//symbols are released together with library handle
+//this prevents dangling symbols
+</span>drop(container);
+}</code></pre></div>
+<p>Unfortunately in Rust it is not possible to create an API for dynamic link libraries that would
+be 100% safe. This API aims to be 99% safe by providing zero cost functional wrappers around
+raw symbols. However it is possible to make a mistake if you create API as a standalone object
+(not in container):</p>
+<p>#Example of a mistake - dangling symbol</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dlopen2::wrapper::{Container, WrapperApi};
+<span class="kw">use </span>dlopen2::raw::Library;
+
+<span class="attr">#[derive(WrapperApi)]
+</span><span class="kw">struct </span>Example&lt;<span class="lifetime">'a</span>&gt; {
+    do_something: <span class="kw">extern </span><span class="string">"C" </span><span class="kw">fn</span>(),
+    add_one: <span class="kw">unsafe extern </span><span class="string">"C" </span><span class="kw">fn </span>(arg: i32) -&gt; i32,
+    global_count: <span class="kw-2">&amp;</span><span class="lifetime">'a </span><span class="kw-2">mut </span>u32,
+}
+
+<span class="kw">fn </span>main () {
+<span class="kw">let </span>lib = Library::open(<span class="string">"libexample.dylib"</span>).unwrap();
+<span class="kw">let </span><span class="kw-2">mut </span>api = <span class="kw">unsafe</span>{Example::load(<span class="kw-2">&amp;</span>lib)};
+drop(lib);
+
+<span class="comment">//api has now dangling symbols
+
+</span>}</code></pre></div>
+<p>To prevent this mistake don’t use structures implementing <code>WrapperApi</code> directly, but rather use
+<code>Container</code> as in the first example.</p>
+<p><strong>Note:</strong> This API has a broad support for optional symbols (this solves the issue with multiple
+versions of one dynamic link library that have different sets of symbols). Please refer to the
+documentation of
+<a href="./struct.OptionalContainer.html"><code>OptionalContainer</code></a>
+and
+<a href="./trait.WrapperMultiApi.html"><code>WrapperMultiApi</code></a>.</p>
+</div></details><h2 id="structs" class="section-header">Structs<a href="#structs" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="struct" href="struct.Container.html" title="struct dlopen2::wrapper::Container">Container</a></div><div class="desc docblock-short">Container for both a dynamic load library handle and its API.</div></li><li><div class="item-name"><a class="struct" href="struct.OptionalContainer.html" title="struct dlopen2::wrapper::OptionalContainer">Optional<wbr>Container</a></div><div class="desc docblock-short">Container for a library handle and both obligatory and optional APIs inside one structure.</div></li></ul><h2 id="traits" class="section-header">Traits<a href="#traits" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="trait" href="trait.WrapperApi.html" title="trait dlopen2::wrapper::WrapperApi">Wrapper<wbr>Api</a></div><div class="desc docblock-short">Trait for defining library API.</div></li><li><div class="item-name"><a class="trait" href="trait.WrapperMultiApi.html" title="trait dlopen2::wrapper::WrapperMultiApi">Wrapper<wbr>Multi<wbr>Api</a></div><div class="desc docblock-short">Allows creation of complex, optional APIs.</div></li></ul><h2 id="derives" class="section-header">Derive Macros<a href="#derives" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="derive" href="derive.WrapperApi.html" title="derive dlopen2::wrapper::WrapperApi">Wrapper<wbr>Api</a></div></li><li><div class="item-name"><a class="derive" href="derive.WrapperMultiApi.html" title="derive dlopen2::wrapper::WrapperMultiApi">Wrapper<wbr>Multi<wbr>Api</a></div></li></ul></section></div></main></body></html>

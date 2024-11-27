@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Effect","EffectState","ProgressBarStatus"],"struct":["Color","EffectsBuilder","Monitor","ProgressBarState","Window"]};

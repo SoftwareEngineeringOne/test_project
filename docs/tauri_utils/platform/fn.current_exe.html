@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Retrieves the currently running binary’s path, taking into account security considerations."><title>current_exe in tauri_utils::platform - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-492a78a4a87dcc01.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="tauri_utils" data-themes="" data-resource-suffix="" data-rustdoc-version="1.82.0 (f6e511eec 2024-10-15)" data-channel="1.82.0" data-search-js="search-a99f1315e7cc5121.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="sidebar-items.js"></script><script defer src="../../static.files/main-921df33f47b8780c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-3b12f09e550e0385.css"></noscript><link rel="icon" href="https://github.com/tauri-apps/tauri/raw/dev/.github/icon.png"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button><a class="logo-container" href="../../tauri_utils/index.html"><img src="https://github.com/tauri-apps/tauri/raw/dev/.github/icon.png" alt=""></a></nav><nav class="sidebar"><div class="sidebar-crate"><a class="logo-container" href="../../tauri_utils/index.html"><img src="https://github.com/tauri-apps/tauri/raw/dev/.github/icon.png" alt="logo"></a><h2><a href="../../tauri_utils/index.html">tauri_<wbr>utils</a><span class="version">2.1.0</span></h2></div><div class="sidebar-elems"><h2><a href="index.html">In tauri_<wbr>utils::<wbr>platform</a></h2></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">tauri_utils</a>::<wbr><a href="index.html">platform</a>::<wbr><a class="fn" href="#">current_exe</a><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><span class="out-of-band"><a class="src" href="../../src/tauri_utils/platform.rs.html#172-174">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub fn current_exe() -&gt; <a class="type" href="https://doc.rust-lang.org/1.82.0/std/io/error/type.Result.html" title="type std::io::error::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/1.82.0/std/path/struct.PathBuf.html" title="struct std::path::PathBuf">PathBuf</a>&gt;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Retrieves the currently running binary’s path, taking into account security considerations.</p>
+<p>The path is cached as soon as possible (before even <code>main</code> runs) and that value is returned
+repeatedly instead of fetching the path every time. It is possible for the path to not be found,
+or explicitly disabled (see following macOS specific behavior).</p>
+<h2 id="platform-specific-behavior"><a class="doc-anchor" href="#platform-specific-behavior">§</a>Platform-specific behavior</h2>
+<p>On <code>macOS</code>, this function will return an error if the original path contained any symlinks
+due to less protection on macOS regarding symlinks. This behavior can be disabled by setting the
+<code>process-relaunch-dangerous-allow-symlink-macos</code> feature, although it is <em>highly discouraged</em>.</p>
+<h2 id="security"><a class="doc-anchor" href="#security">§</a>Security</h2>
+<p>If the above platform-specific behavior does <strong>not</strong> take place, this function uses the
+following resolution.</p>
+<p>We canonicalize the path we received from <a href="https://doc.rust-lang.org/1.82.0/std/env/fn.current_exe.html" title="fn std::env::current_exe"><code>std::env::current_exe</code></a> to resolve any soft links.
+This avoids the usual issue of needing the file to exist at the passed path because a valid
+current executable result for our purpose should always exist. Notably,
+<a href="https://doc.rust-lang.org/1.82.0/std/env/fn.current_exe.html" title="fn std::env::current_exe"><code>std::env::current_exe</code></a> also has a security section that goes over a theoretical attack using
+hard links. Let’s cover some specific topics that relate to different ways an attacker might
+try to trick this function into returning the wrong binary path.</p>
+<h3 id="symlinks-soft-links"><a class="doc-anchor" href="#symlinks-soft-links">§</a>Symlinks (“Soft Links”)</h3>
+<p><a href="https://doc.rust-lang.org/1.82.0/std/path/struct.Path.html#method.canonicalize" title="method std::path::Path::canonicalize"><code>std::path::Path::canonicalize</code></a> is used to resolve symbolic links to the original path,
+including nested symbolic links (<code>link2 -&gt; link1 -&gt; bin</code>). On macOS, any results that include
+a symlink are rejected by default due to lesser symlink protections. This can be disabled,
+<strong>although discouraged</strong>, with the <code>process-relaunch-dangerous-allow-symlink-macos</code> feature.</p>
+<h3 id="hard-links"><a class="doc-anchor" href="#hard-links">§</a>Hard Links</h3>
+<p>A <a href="https://en.wikipedia.org/wiki/Hard_link">Hard Link</a> is a named entry that points to a file in the file system.
+On most systems, this is what you would think of as a “file”. The term is
+used on filesystems that allow multiple entries to point to the same file.
+The linked <a href="https://en.wikipedia.org/wiki/Hard_link">Hard Link</a> Wikipedia page provides a decent overview.</p>
+<p>In short, unless the attacker was able to create the link with elevated
+permissions, it should generally not be possible for them to hard link
+to a file they do not have permissions to - with exception to possible
+operating system exploits.</p>
+<p>There are also some platform-specific information about this below.</p>
+<h4 id="windows"><a class="doc-anchor" href="#windows">§</a>Windows</h4>
+<p>Windows requires a permission to be set for the user to create a symlink
+or a hard link, regardless of ownership status of the target. Elevated
+permissions users have the ability to create them.</p>
+<h4 id="macos"><a class="doc-anchor" href="#macos">§</a>macOS</h4>
+<p>macOS allows for the creation of symlinks and hard links to any file.
+Accessing through those links will fail if the user who owns the links
+does not have the proper permissions on the original file.</p>
+<h4 id="linux"><a class="doc-anchor" href="#linux">§</a>Linux</h4>
+<p>Linux allows for the creation of symlinks to any file. Accessing the
+symlink will fail if the user who owns the symlink does not have the
+proper permissions on the original file.</p>
+<p>Linux additionally provides a kernel hardening feature since version
+3.6 (30 September 2012). Most distributions since then have enabled
+the protection (setting <code>fs.protected_hardlinks = 1</code>) by default, which
+means that a vast majority of desktop Linux users should have it enabled.
+<strong>The feature prevents the creation of hardlinks that the user does not own
+or have read/write access to.</strong> <a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=800179c9b8a1e796e441674776d11cd4c05d61d7">See the patch that enabled this</a>.</p>
+</div></details></section></div></main></body></html>

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BuilderError","PermissionState"],"struct":["Builder","PluginApi","PluginHandle","TauriPlugin"],"trait":["Plugin"]};

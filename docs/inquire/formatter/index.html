@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Type aliases and default implementations for functions called as formatters of a given input."><title>inquire::formatter - Rust</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-492a78a4a87dcc01.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="inquire" data-themes="" data-resource-suffix="" data-rustdoc-version="1.82.0 (f6e511eec 2024-10-15)" data-channel="1.82.0" data-search-js="search-a99f1315e7cc5121.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../sidebar-items.js"></script><script defer src="../../static.files/main-921df33f47b8780c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-3b12f09e550e0385.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc mod"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../inquire/index.html">inquire</a><span class="version">0.7.5</span></h2></div><h2 class="location"><a href="#">Module formatter</a></h2><div class="sidebar-elems"><section><ul class="block"><li><a href="#constants">Constants</a></li><li><a href="#types">Type Aliases</a></li></ul></section><h2><a href="../index.html">In crate inquire</a></h2></div></nav><div class="sidebar-resizer"></div><main><div class="width-limiter"><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1>Module <a href="../index.html">inquire</a>::<wbr><a class="mod" href="#">formatter</a><button id="copy-path" title="Copy item path to clipboard">Copy item path</button></h1><span class="out-of-band"><a class="src" href="../../src/inquire/formatter.rs.html#1-228">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Type aliases and default implementations for functions called as formatters
+of a given input.</p>
+<p>Formatters receive the user input to a given prompt and return a formatted
+output <code>String</code>, which is displayed to the user as the submitted value.</p>
+<h2 id="example"><a class="doc-anchor" href="#example">§</a>Example</h2>
+<p><strong>Prompt code</strong></p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>inquire::formatter::StringFormatter;
+<span class="kw">use </span>inquire::Text;
+
+<span class="kw">let </span>formatter: StringFormatter = <span class="kw-2">&amp;</span>|s| {
+    <span class="kw">let </span><span class="kw-2">mut </span>c = s.chars();
+    <span class="kw">match </span>c.next() {
+        <span class="prelude-val">None </span>=&gt; String::from(<span class="string">"No name given"</span>),
+        <span class="prelude-val">Some</span>(f) =&gt; {
+            String::from(<span class="string">"My name is "</span>)
+                + f.to_uppercase().collect::&lt;String&gt;().as_str()
+                + c.as_str()
+        }
+    }
+};
+
+<span class="kw">let </span>name = Text::new(<span class="string">"What's your name?"</span>)
+    .with_formatter(formatter)
+    .prompt();
+
+<span class="kw">match </span>name {
+    <span class="prelude-val">Ok</span>(<span class="kw">_</span>) =&gt; {}
+    <span class="prelude-val">Err</span>(err) =&gt; <span class="macro">println!</span>(<span class="string">"Error: {}"</span>, err),
+}</code></pre></div>
+<p><strong>Before submission (pressing Enter)</strong></p>
+<div class="example-wrap"><pre class="language-text"><code>? What&#39;s your name? mikael
+</code></pre></div>
+<p><strong>After submission</strong></p>
+<div class="example-wrap"><pre class="language-text"><code>? What&#39;s your name? My name is Mikael
+</code></pre></div></div></details><h2 id="constants" class="section-header">Constants<a href="#constants" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="constant" href="constant.DEFAULT_BOOL_FORMATTER.html" title="constant inquire::formatter::DEFAULT_BOOL_FORMATTER">DEFAUL<wbr>T_<wbr>BOOL_<wbr>FORMATTER</a></div><div class="desc docblock-short">String formatter used by default in <a href="../struct.Confirm.html" title="struct inquire::Confirm">Confirm</a> prompts.
+Translates <code>bool</code> to <code>"Yes"</code> and <code>false</code> to <code>"No"</code>.</div></li><li><div class="item-name"><a class="constant" href="constant.DEFAULT_STRING_FORMATTER.html" title="constant inquire::formatter::DEFAULT_STRING_FORMATTER">DEFAUL<wbr>T_<wbr>STRIN<wbr>G_<wbr>FORMATTER</a></div><div class="desc docblock-short">String formatter used by default in inputs that return a <code>String</code> as input.
+Its behavior is to just echo the received input.</div></li></ul><h2 id="types" class="section-header">Type Aliases<a href="#types" class="anchor">§</a></h2><ul class="item-table"><li><div class="item-name"><a class="type" href="type.BoolFormatter.html" title="type inquire::formatter::BoolFormatter">Bool<wbr>Formatter</a></div><div class="desc docblock-short">Type alias for formatters used in <a href="../struct.Confirm.html" title="struct inquire::Confirm">Confirm</a> prompts.</div></li><li><div class="item-name"><a class="type" href="type.CustomTypeFormatter.html" title="type inquire::formatter::CustomTypeFormatter">Custom<wbr>Type<wbr>Formatter</a></div><div class="desc docblock-short">Type alias for formatters used in <a href="../struct.CustomType.html" title="struct inquire::CustomType"><code>CustomType</code></a> prompts.</div></li><li><div class="item-name"><a class="type" href="type.MultiOptionFormatter.html" title="type inquire::formatter::MultiOptionFormatter">Multi<wbr>Option<wbr>Formatter</a></div><div class="desc docblock-short">Type alias for formatters used in <a href="../struct.MultiSelect.html" title="struct inquire::MultiSelect"><code>MultiSelect</code></a> prompts.</div></li><li><div class="item-name"><a class="type" href="type.OptionFormatter.html" title="type inquire::formatter::OptionFormatter">Option<wbr>Formatter</a></div><div class="desc docblock-short">Type alias for formatters used in <a href="../struct.Select.html" title="struct inquire::Select">Select</a> prompts.</div></li><li><div class="item-name"><a class="type" href="type.StringFormatter.html" title="type inquire::formatter::StringFormatter">String<wbr>Formatter</a></div><div class="desc docblock-short">Type alias for formatters that receive a string slice as the input,
+required by <a href="../struct.Text.html" title="struct inquire::Text">Text</a> and <a href="../struct.Password.html" title="struct inquire::Password">Password</a> for example.</div></li></ul></section></div></main></body></html>

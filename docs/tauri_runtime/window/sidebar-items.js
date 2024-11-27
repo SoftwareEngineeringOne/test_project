@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CursorIcon","DragDropEvent","WebviewEvent","WindowEvent"],"fn":["assert_label_is_valid","is_label_valid"],"struct":["DetachedWindow","DetachedWindowWebview","PendingWindow","RawWindow","WindowId","WindowSizeConstraints"],"trait":["WindowBuilder","WindowBuilderBase"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"constant":["CAPABILITIES_SCHEMA_FILE_NAME","CAPABILITIES_SCHEMA_FOLDER_PATH"],"fn":["generate_capability_schema","generate_permissions_schema"],"trait":["PermissionSchemaGenerator"]};

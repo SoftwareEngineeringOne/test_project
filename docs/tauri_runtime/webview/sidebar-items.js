@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DownloadEvent","PageLoadEvent"],"struct":["DetachedWebview","PendingWebview","WebviewAttributes"],"type":["WebviewIpcHandler"]};

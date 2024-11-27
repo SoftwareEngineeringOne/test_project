@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error","Theme","TitleBarStyle","WindowEffect","WindowEffectState"],"fn":["display_path","write_if_changed"],"macro":["literal_struct"],"mod":["acl","assets","build","config","html","io","mime_type","pattern","platform","plugin","resources","tokens"],"struct":["Env","PackageInfo"],"type":["Result"]};

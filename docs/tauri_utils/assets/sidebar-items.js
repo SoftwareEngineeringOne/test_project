@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["CspHash"],"struct":["AssetKey","EmbeddedAssets"],"type":["AssetsIter"]};

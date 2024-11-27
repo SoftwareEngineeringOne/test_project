@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["add","insert_if_not_exists","remove_if_exists"],"mod":["filehandler","metadata"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["DownloadEvent","PageLoadEvent"],"struct":["Color","InvokeRequest","PageLoadPayload","PlatformWebview","ResolvedScope","Url","Webview","WebviewWindow","WebviewWindowBuilder"]};

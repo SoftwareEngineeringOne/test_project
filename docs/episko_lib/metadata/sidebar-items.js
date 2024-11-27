@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["buildsystem","ide","language"],"struct":["Metadata","MetadataBuilder"]};
