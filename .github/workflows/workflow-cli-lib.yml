@@ -12,7 +12,7 @@ jobs:
     name: Matrix test
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ["cli", "lib"] }
+      matrix: { dir: ["cli", "lib", "gui/src-tauri"] }
 
     steps:
       - name: Checkout code
