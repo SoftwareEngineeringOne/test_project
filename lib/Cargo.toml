@@ -4,5 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+chrono = { version = "0.4.38", features = ["serde"] }
+color-eyre = "0.6.3"
 serde = { version = "1.0.215", features = ["derive"] }
 toml = "0.8.19"
+uuid = { version = "1.11.0", features = ["serde", "v4"] }

@@ -1,0 +1,20 @@
+id = "ca5fe670-ade6-40ea-b1ad-a824ee8462b6"
+directory = "/home/simon"
+title = "Episko"
+description = ""
+categories = ["This", "is", "not", "fun"]
+repository_url = "google.com"
+created = "2024-11-27T08:12:23.555318477Z"
+updated = "2024-11-27T08:12:23.555320159Z"
+
+[[languages]]
+name = "Rust"
+version = "1.82.0"
+
+[build_system]
+name = "Cargo"
+version = ""
+
+[preferred_ide]
+name = "neovim"
+version = "0.10"

@@ -21,6 +21,8 @@
             gobject-introspection
             cargo
             cargo-tauri
+            cargo-nextest
+            cargo-tarpaulin
             nodejs
             bun
             rustc
