@@ -8,7 +8,7 @@ env:
 
 jobs:
   publish:
-    name: Matrix test
+    name: Publish Crates
     runs-on: ubuntu-latest
     # strategy:
     #   matrix: { dir: ["cli", "lib"] }

@@ -118,17 +118,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c95c10ba0b00a02636238b814946408b1322d5ac4760326e6fb8ec956d85775"
 
 [[package]]
-name = "app"
-version = "1.0.0"
-dependencies = [
- "episko_lib",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
-]
-
-[[package]]
 name = "atk"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -848,6 +837,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4ef6b89e5b37196644d8796de5268852ff179b44e96276cf4290264843743bb7"
 
 [[package]]
+name = "episko"
+version = "0.0.1"
+dependencies = [
+ "episko_lib",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+]
+
+[[package]]
 name = "episko_cli"
 version = "0.0.1"
 dependencies = [
@@ -861,7 +861,7 @@ dependencies = [
 
 [[package]]
 name = "episko_lib"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "chrono",
  "color-eyre",
