@@ -1,0 +1,52 @@
+name: Generate Docs
+on:
+  push: { branches: main }
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  publish:
+    name: Matrix test
+    runs-on: ubuntu-latest
+    # strategy:
+    #   matrix: { dir: ["cli", "lib"] }
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rust Caching
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Docs
+        run: |
+          cargo doc --workspace --target-dir tmp
+
+      - name: Order files
+        run: |
+          rm docs -rf
+          mkdir docs
+          mv tmp/doc/* docs
+          mv tmp/doc/.* docs
+          rm tmp -rf
+
+      - name: Github Config
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs -f
+          git commit -a -m "docs: generate documentation"
+
+      - name: Push Documentation
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: docs
+          force: true
