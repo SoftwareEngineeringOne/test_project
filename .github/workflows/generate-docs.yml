@@ -7,6 +7,8 @@ env:
   CARGO_TERM_COLOR: always
   CACHE_ON_FAILURE: true
 
+permissions: write-all
+
 jobs:
   generate:
     name: Generate documentation
