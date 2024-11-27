@@ -1,5 +1,6 @@
 [package]
 name = "episko_cli"
+description = "cli for episko project"
 version = "0.0.1"
 authors = ["Simon Blum", "Ben Oeckl", "Paul Stöckle", "Maximilian Rodler"]
 license = "MIT"
